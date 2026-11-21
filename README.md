@@ -1,8 +1,8 @@
 # Scroll-built home site (Lee Construction pitch)
 
-A Next.js 14 site where a brick 3 bed, 2 bath home goes from a grass lot to move-in day as the visitor scrolls:
-grass is scraped, the excavator digs, layout lines and a blueprint appear, the foundation is poured, framing goes up,
-the house is dried in, brick is laid course by course, and the lights come on at dusk.
+A Next.js 14 site where a two-story brick 4 bed, 2.5 bath home goes from a grass lot to move-in day as the visitor scrolls,
+as a photoreal time-lapse: the lot is cleared, staked and dug, the slab is poured, framing goes up, the house is dried in,
+brick is laid, and the yard is finished. (The original drawn version is still in `scenes/house/`.)
 
 > Private pitch mockup for Lee Construction. Phone, email and claims are placeholders. Don't publish or send without sign-off.
 
@@ -39,11 +39,13 @@ Same engine and `ScrollStory`, new scene file:
    drywall, cabinets, counters, backsplash, lights on) and the SVG drawing, with `anim()` keyframes on each part.
 2. Render `<ScrollStory config={kitchenScene}><KitchenScene /></ScrollStory>` on a page.
 
-## Swapping in AI-generated or photo frames
+## Photo frames (what the home page uses now)
 
-The scene is vector art so every stage lines up perfectly with a locked camera. To use generated images instead, put one image per
-stage in `public/frames/` and stack them as `<image>` elements inside the scene, each with `anim({ o: window4(...) })` so they
-crossfade in sequence. Keep the same camera angle in every frame.
+The scroll section scrubs a photoreal time-lapse of a two-story brick home: 170 WebP frames in
+`public/frames/brick-two-story-atlanta/wide/`, made by `production/` (see `production/README.md`).
+`lib/frame-player.ts` draws the frame for the current scroll position on a canvas, loading frames coarse-to-fine so
+scrubbing works before they've all arrived. `scenes/photo/photoBuild.ts` holds the captions, timed to the 7 clips.
+To go back to the drawn house, render `<ScrollStory config={houseScene}><HouseScene /></ScrollStory>` in `components/HomePage.tsx`.
 
 ## Preview file
 

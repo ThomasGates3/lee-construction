@@ -117,6 +117,14 @@ export function ScrollStory({
             </svg>
           )}
 
+          {/* photos are brighter than the drawing: shade the sky under the nav and the ground under the captions */}
+          {frames && (
+            <>
+              <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-stone-900/60 to-transparent" />
+              <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[60%] bg-gradient-to-t from-stone-900/85 via-stone-900/40 to-transparent landscape:block" />
+            </>
+          )}
+
           {/* readability wash behind captions on wide screens */}
           <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[46%] bg-gradient-to-r from-stone-900/55 via-stone-900/20 to-transparent landscape:block" />
 
