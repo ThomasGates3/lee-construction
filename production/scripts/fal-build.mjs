@@ -13,12 +13,16 @@
  *   --only N                  redo one stage (stills) or the clip that ends on stage N (clips)
  *   --from N                  restart stills from stage N downwards, keeping the later ones
  *   --prompts path.json       another prompt set (default production/prompts/brick-ranch-atlanta.json)
+ *
+ * A prompt set with a "base" block builds on another set instead of starting over: stages up to
+ * base.reuse_through are copied from that set's stills, and the finished image is an edit of the
+ * other set's finished still, so the lot, camera and footprint stay identical.
  *   --yes                     skip the "spend this?" question
  *
  * Look at the stills before you run clips. A still that drifts (house moved, horizon
  * shifted, extra stuff left over) is cheap to redo with --only; a bad clip costs more.
  */
-import { existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync, rmSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readFileSync, writeFileSync, readdirSync, rmSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { execFileSync } from "node:child_process";
 import { createInterface } from "node:readline/promises";
@@ -73,7 +77,9 @@ const saveManifest = (aspect, m) => {
   mkdirSync(outDir(aspect), { recursive: true });
   writeFileSync(manifestPath(aspect), JSON.stringify(m, null, 2) + "\n");
 };
-const stillFile = (aspect, s) => join(outDir(aspect), "stills", `${String(s.id).padStart(2, "0")}-${s.slug}.png`);
+const stillFile = (aspect, s, name = P.name) =>
+  join(ROOT, "production/out", name, aspect, "stills", `${String(s.id).padStart(2, "0")}-${s.slug}.png`);
+const reused = (s) => Boolean(P.base) && s.id <= P.base.reuse_through;
 const clipFile = (aspect, s) => join(outDir(aspect), "clips", `${String(s.id).padStart(2, "0")}-${s.slug}.mp4`);
 
 /* ---------- prompts ---------- */
@@ -98,9 +104,32 @@ function clipPrompt(s) {
 
 /* ---------- what will run ---------- */
 function stillJobs(aspect) {
-  if (only) return stages.filter((s) => s.id === only);
+  if (only) return stages.filter((s) => s.id === only && !reused(s));
   const top = from ?? last;
-  return stages.filter((s) => s.id <= top).sort((a, b) => b.id - a.id); // finished first, then backwards
+  return stages.filter((s) => s.id <= top && !reused(s)).sort((a, b) => b.id - a.id); // finished first, then backwards
+}
+function baseEditPrompt(aspect) {
+  const a = P.aspects[aspect];
+  return [`Edit this photo. ${P.lock}`, a.bible, `Change only this: ${P.base.edit}`, P.final, "Photorealistic, same image quality as the input."].join(" ");
+}
+/** copy the stages this set shares with its base set, so clips can start from them */
+function copyReused(aspect, m) {
+  const bm = JSON.parse(readFileSync(join(ROOT, "production/out", P.base.set, aspect, "manifest.json"), "utf8"));
+  for (const s of stages.filter(reused)) {
+    const src = stillFile(aspect, s, P.base.set);
+    if (!existsSync(src)) die(`Missing ${src}. Make the ${P.base.set} stills first.`);
+    mkdirSync(dirname(stillFile(aspect, s)), { recursive: true });
+    copyFileSync(src, stillFile(aspect, s));
+    m.stills[s.id] = { ...bm.stills[s.id], from: P.base.set };
+  }
+}
+async function baseUrl(fal, aspect) {
+  const bm = JSON.parse(readFileSync(join(ROOT, "production/out", P.base.set, aspect, "manifest.json"), "utf8"));
+  const known = bm.stills[last]?.url;
+  const head = known ? await fetch(known, { method: "HEAD" }).catch(() => null) : null;
+  if (head?.ok) return known;
+  const file = stillFile(aspect, stages.find((x) => x.id === last), P.base.set);
+  return fal.storage.upload(new Blob([readFileSync(file)], { type: "image/png" }));
 }
 function clipJobs() {
   const withClip = stages.filter((s) => s.clip && s.id > stages[0].id);
@@ -174,9 +203,21 @@ async function stills() {
     const a = P.aspects[aspect];
     const m = loadManifest(aspect);
     console.log(`\n${aspect} (${a.aspect_ratio})`);
+    if (P.base) {
+      copyReused(aspect, m);
+      saveManifest(aspect, m);
+      console.log(`  stages 1-${P.base.reuse_through} copied from ${P.base.set}`);
+    }
     for (const s of stillJobs(aspect)) {
       let data;
-      if (s.id === last) {
+      if (s.id === last && P.base) {
+        data = await run(
+          fal,
+          IMAGE_EDIT,
+          { prompt: baseEditPrompt(aspect), image_urls: [await baseUrl(fal, aspect)], aspect_ratio: a.aspect_ratio, resolution: "2K", output_format: "png", num_images: 1 },
+          `stage ${s.id} ${s.slug} (edit of ${P.base.set} stage ${last})`,
+        );
+      } else if (s.id === last) {
         data = await run(
           fal,
           IMAGE_T2I,
@@ -297,8 +338,9 @@ function plan() {
   for (const aspect of aspects) {
     console.log(`\n${aspect} (${P.aspects[aspect].aspect_ratio})`);
     for (const s of stillJobs(aspect)) {
-      console.log(`  still ${s.id} ${s.slug}: ${s.id === last ? "new image" : `edit of stage ${s.id + 1}`}`);
+      console.log(`  still ${s.id} ${s.slug}: ${s.id !== last ? `edit of stage ${s.id + 1}` : P.base ? `edit of ${P.base.set} stage ${last}` : "new image"}`);
     }
+    if (P.base) console.log(`  stills 1-${P.base.reuse_through}: copied from ${P.base.set}, no cost`);
     for (const s of clipJobs()) console.log(`  clip  ${s.id - 1} -> ${s.id} ${s.slug}`);
   }
   const e = estimate("plan");
