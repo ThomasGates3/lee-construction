@@ -79,7 +79,10 @@ const saveManifest = (aspect, m) => {
 };
 const stillFile = (aspect, s, name = P.name) =>
   join(ROOT, "production/out", name, aspect, "stills", `${String(s.id).padStart(2, "0")}-${s.slug}.png`);
-const reused = (s) => Boolean(P.base) && s.id <= P.base.reuse_through;
+/* a base set only applies to the aspects it lists (it needs that set's stills in that framing) */
+const baseFor = (aspect) => (P.base && (!P.base.aspects || P.base.aspects.includes(aspect)) ? P.base : null);
+let currentAspect = "wide";
+const reused = (s, aspect = currentAspect) => Boolean(baseFor(aspect)) && s.id <= baseFor(aspect).reuse_through;
 const clipFile = (aspect, s) => join(outDir(aspect), "clips", `${String(s.id).padStart(2, "0")}-${s.slug}.mp4`);
 
 /* ---------- prompts ---------- */
@@ -104,6 +107,7 @@ function clipPrompt(s) {
 
 /* ---------- what will run ---------- */
 function stillJobs(aspect) {
+  currentAspect = aspect;
   if (only) return stages.filter((s) => s.id === only && !reused(s));
   const top = from ?? last;
   return stages.filter((s) => s.id <= top && !reused(s)).sort((a, b) => b.id - a.id); // finished first, then backwards
@@ -203,14 +207,14 @@ async function stills() {
     const a = P.aspects[aspect];
     const m = loadManifest(aspect);
     console.log(`\n${aspect} (${a.aspect_ratio})`);
-    if (P.base) {
+    if (baseFor(aspect)) {
       copyReused(aspect, m);
       saveManifest(aspect, m);
       console.log(`  stages 1-${P.base.reuse_through} copied from ${P.base.set}`);
     }
     for (const s of stillJobs(aspect)) {
       let data;
-      if (s.id === last && P.base) {
+      if (s.id === last && baseFor(aspect)) {
         data = await run(
           fal,
           IMAGE_EDIT,
@@ -338,9 +342,9 @@ function plan() {
   for (const aspect of aspects) {
     console.log(`\n${aspect} (${P.aspects[aspect].aspect_ratio})`);
     for (const s of stillJobs(aspect)) {
-      console.log(`  still ${s.id} ${s.slug}: ${s.id !== last ? `edit of stage ${s.id + 1}` : P.base ? `edit of ${P.base.set} stage ${last}` : "new image"}`);
+      console.log(`  still ${s.id} ${s.slug}: ${s.id !== last ? `edit of stage ${s.id + 1}` : baseFor(aspect) ? `edit of ${P.base.set} stage ${last}` : "new image"}`);
     }
-    if (P.base) console.log(`  stills 1-${P.base.reuse_through}: copied from ${P.base.set}, no cost`);
+    if (baseFor(aspect)) console.log(`  stills 1-${P.base.reuse_through}: copied from ${P.base.set}, no cost`);
     for (const s of clipJobs()) console.log(`  clip  ${s.id - 1} -> ${s.id} ${s.slug}`);
   }
   const e = estimate("plan");

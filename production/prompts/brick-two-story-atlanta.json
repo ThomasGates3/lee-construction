@@ -1,7 +1,7 @@
 {
   "name": "brick-two-story-atlanta",
   "arc": "Grass lot to finished two-story brick 4 bed, 2.5 bath home in Metro Atlanta",
-  "notes": "Builds on brick-ranch-atlanta: stages 1-4 (grass lot, cleared, layout and dig, foundation) are the ranch stills, since nothing above the slab exists yet. The finished two-story home is an edit of the ranch's finished still on the same footprint, then stages 7, 6 and 5 are edits back from it, so the framing stands on the ranch's slab.",
+  "notes": "Builds on brick-ranch-atlanta: stages 1-4 (grass lot, cleared, layout and dig, foundation) are the ranch stills, since nothing above the slab exists yet. The finished two-story home is an edit of the ranch's finished still on the same footprint, then stages 7, 6 and 5 are edits back from it, so the framing stands on the ranch's slab. The tall (phone) set has no ranch stills to build on, so it is made from scratch like the ranch set.",
   "lock": "Locked camera, fixed tripod perspective. Keep the exact same camera position, lens, framing, horizon line, street, curb, treeline, sky and lighting as the input image. The house footprint stays exactly where it is: centered left to right, spanning the middle half of the frame width, sitting on the same patch of ground at the same size, and the house's full height and roof stay inside the frame. Do not recompose, zoom, crop, pan, tilt or re-centre. No people, no readable text, no logos, no signs.",
   "aspects": {
     "wide": {
@@ -80,6 +80,9 @@
   "base": {
     "set": "brick-ranch-atlanta",
     "reuse_through": 4,
-    "edit": "Replace the single-story house with a two-story house on exactly the same footprint: the two-story main body stands exactly where the single-story main body is, at the same width and in the same spot, and the attached one-story two-car garage stands exactly where the existing garage is, at the same width. Keep the lawn, mulch beds, shrubs, both maple trees, the driveway, the walkway, the curb, street, treeline and sky as they are. The new house is:"
+    "edit": "Replace the single-story house with a two-story house on exactly the same footprint: the two-story main body stands exactly where the single-story main body is, at the same width and in the same spot, and the attached one-story two-car garage stands exactly where the existing garage is, at the same width. Keep the lawn, mulch beds, shrubs, both maple trees, the driveway, the walkway, the curb, street, treeline and sky as they are. The new house is:",
+    "aspects": [
+      "wide"
+    ]
   }
 }
