@@ -1,0 +1,76 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "Inter", system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+  background: #1c1915;
+}
+
+body {
+  background: #faf8f4;
+  color: #1c1915;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* scene fades in once the engine has set every element to its first frame */
+.story-stage svg {
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.story-stage[data-ready="true"] svg {
+  opacity: 1;
+}
+
+.rail-item {
+  color: rgba(255, 255, 255, 0.45);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+.rail-item[data-state="done"] {
+  color: rgba(255, 255, 255, 0.75);
+}
+.rail-item[data-state="active"] {
+  color: #e9b98a;
+  transform: translateX(-4px);
+}
+
+.scroll-cue {
+  position: relative;
+}
+.scroll-cue::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 6px;
+  width: 3px;
+  height: 7px;
+  margin-left: -1.5px;
+  border-radius: 2px;
+  background: #e9b98a;
+  animation: cue 1.6s ease-in-out infinite;
+}
+@keyframes cue {
+  0% { transform: translateY(0); opacity: 1; }
+  70% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .scroll-cue::after { animation: none; }
+}
+
+/* short laptop screens: keep captions inside the soil band, under the house */
+@media (orientation: landscape) and (max-height: 820px) {
+  .story-caption h2 { font-size: 2.1rem; }
+  .story-caption p { font-size: 0.95rem; }
+}
+@media (orientation: landscape) and (max-height: 600px) {
+  .story-caption h2 { font-size: 1.6rem; }
+  .story-caption > p:not(:first-child) { display: none; }
+}

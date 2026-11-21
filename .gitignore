@@ -1,0 +1,12 @@
+node_modules
+.next
+out
+preview/dist
+*.tsbuildinfo
+next-env.d.ts
+.env*
+.vercel
+
+# fal outputs: stills are kept (clips need them as inputs); clips and work files are large
+production/out/**/clips/
+production/out/**/work/
