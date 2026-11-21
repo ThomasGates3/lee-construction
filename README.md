@@ -49,7 +49,7 @@ To go back to the drawn house, render `<ScrollStory config={houseScene}><HouseSc
 
 ## Preview file
 
-`npm run preview:html` writes `preview/dist/index.html`, a single self-contained file of the site (demo branding by default).
+`npm run preview:html` writes `preview/dist/index.html`, a single self-contained file of the site (demo branding by default). The photo frames are not inlined, so use `npm run dev` to see them.
 
 ## Before launch
 
