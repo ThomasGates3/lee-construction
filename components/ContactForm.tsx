@@ -54,7 +54,7 @@ export function ContactForm() {
       </label>
       <label className="text-sm text-stone-300">
         Tell us about your home
-        <textarea id="lead-message" name="message" rows={4} className={field} placeholder="3 bed, 2 bath brick home, about 1,800 sq ft..." />
+        <textarea id="lead-message" name="message" rows={4} className={field} placeholder="4 bed, 2.5 bath two-story brick home, about 2,600 sq ft..." />
       </label>
       <button type="submit" className="rounded-full bg-copper-400 px-6 py-3.5 font-semibold text-stone-900 transition hover:bg-copper-300">
         Book a free site walk

@@ -3,25 +3,30 @@
 import { useEffect, useRef, type ReactNode } from "react";
 import { anim, createScrollEngine } from "@/lib/scroll-engine";
 import type { SceneConfig } from "@/lib/story";
+import { createFramePlayer, type FrameSource } from "@/lib/frame-player";
 
 /**
  * Generic scroll story: a tall section with a sticky stage inside.
- * Pass any scene (house build, kitchen remodel...) as children plus its config.
+ * Pass any scene (house build, kitchen remodel...) as SVG children plus its config,
+ * or pass `frames` to scrub a photo/video image sequence instead.
  */
 export function ScrollStory({
   config,
   children,
   finalActions,
+  frames,
   heightVh = 900,
 }: {
   config: SceneConfig;
-  children: ReactNode;
+  children?: ReactNode;
+  frames?: FrameSource;
   finalActions?: ReactNode;
   heightVh?: number;
 }) {
   const trackRef = useRef<HTMLElement>(null);
   const stageRef = useRef<HTMLDivElement>(null);
   const svgRef = useRef<SVGSVGElement>(null);
+  const canvasRef = useRef<HTMLCanvasElement>(null);
   const dayRef = useRef<HTMLSpanElement>(null);
   const barRef = useRef<HTMLDivElement>(null);
   const railRef = useRef<HTMLOListElement>(null);
@@ -32,17 +37,20 @@ export function ScrollStory({
     const track = trackRef.current;
     const stage = stageRef.current;
     const svg = svgRef.current;
-    if (!track || !stage || !svg) return;
+    const canvas = canvasRef.current;
+    if (!track || !stage || (!svg && !canvas)) return;
 
     // portrait phones get a tighter crop so the house stays big
     const mq = window.matchMedia("(orientation: portrait)");
     const setViewBox = () => {
+      if (!svg) return;
       const tall = mq.matches;
       svg.setAttribute("viewBox", tall ? config.viewBoxTall : config.viewBoxWide);
       svg.setAttribute("preserveAspectRatio", tall ? "xMidYMax meet" : "xMidYMax slice");
     };
     setViewBox();
     mq.addEventListener("change", setViewBox);
+    const player = canvas && frames ? createFramePlayer(canvas, frames) : null;
 
     let lastActive = -1;
     let lastDay = -1;
@@ -52,6 +60,7 @@ export function ScrollStory({
       track,
       scope: stage,
       onFrame: (p) => {
+        player?.show(p);
         const day = Math.max(1, Math.round(p * config.totalDays));
         if (day !== lastDay && dayRef.current) {
           dayRef.current.textContent = String(day).padStart(3, "0");
@@ -74,9 +83,10 @@ export function ScrollStory({
 
     return () => {
       engine.destroy();
+      player?.destroy();
       mq.removeEventListener("change", setViewBox);
     };
-  }, [config, stages]);
+  }, [config, stages, frames]);
 
   return (
     <section ref={trackRef} id="build" className="relative" style={{ height: `${heightVh}vh` }} aria-label="Scroll through the build">
@@ -86,16 +96,26 @@ export function ScrollStory({
       >
         {/* scene */}
         <div className="relative w-full flex-1 overflow-hidden portrait:h-[56%] portrait:flex-none" style={{ background: config.backdrop }}>
-          <svg
-            ref={svgRef}
-            className="absolute inset-0 h-full w-full overflow-visible"
-            viewBox={config.viewBoxWide}
-            preserveAspectRatio="xMidYMax slice"
-            role="img"
-            aria-label="Illustration of a home being built, from bare land to a finished house, driven by scrolling"
-          >
-            {children}
-          </svg>
+          {frames ? (
+            <canvas
+              ref={canvasRef}
+              className="absolute inset-0 h-full w-full bg-cover bg-bottom"
+              style={{ backgroundImage: `url(${frames.base}/${frames.manifest.poster})` }}
+              role="img"
+              aria-label="Photo time-lapse of a brick home being built, from a grass lot to the finished house, driven by scrolling"
+            />
+          ) : (
+            <svg
+              ref={svgRef}
+              className="absolute inset-0 h-full w-full overflow-visible"
+              viewBox={config.viewBoxWide}
+              preserveAspectRatio="xMidYMax slice"
+              role="img"
+              aria-label="Illustration of a home being built, from bare land to a finished house, driven by scrolling"
+            >
+              {children}
+            </svg>
+          )}
 
           {/* readability wash behind captions on wide screens */}
           <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[46%] bg-gradient-to-r from-stone-900/55 via-stone-900/20 to-transparent landscape:block" />

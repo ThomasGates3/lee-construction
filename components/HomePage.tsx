@@ -1,7 +1,7 @@
 import { ScrollStory } from "@/components/ScrollStory";
 import { ContactForm } from "@/components/ContactForm";
 import { SiteHeader } from "@/components/SiteHeader";
-import { HouseScene, houseScene } from "@/scenes/house/HouseScene";
+import { photoFrames, photoScene } from "@/scenes/photo/photoBuild";
 import { site } from "@/lib/site";
 
 function Logo() {
@@ -40,7 +40,8 @@ export function HomePage() {
       </SiteHeader>
 
       <ScrollStory
-        config={houseScene}
+        config={photoScene}
+        frames={photoFrames}
         finalActions={
           <>
             <a href="#contact" className="rounded-full bg-copper-400 px-5 py-3 text-sm font-semibold text-stone-900 transition hover:bg-copper-300">
@@ -51,9 +52,7 @@ export function HomePage() {
             </a>
           </>
         }
-      >
-        <HouseScene />
-      </ScrollStory>
+      />
 
       {/* highlights */}
       <section className="bg-stone-900 text-stone-50">
