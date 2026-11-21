@@ -20,6 +20,7 @@ export function ScrollStory({
   config,
   children,
   finalActions,
+  introActions,
   frames,
   heightVh = 900,
 }: {
@@ -27,6 +28,8 @@ export function ScrollStory({
   children?: ReactNode;
   frames?: StoryFrames;
   finalActions?: ReactNode;
+  /** shown under the first caption, for visitors who want to act before scrolling the build */
+  introActions?: ReactNode;
   heightVh?: number;
 }) {
   const trackRef = useRef<HTMLElement>(null);
@@ -202,6 +205,7 @@ export function ScrollStory({
                   >
                     {s.body}
                   </p>
+                  {first && introActions && <div className="mt-5 flex flex-wrap items-center gap-3 sm:mt-6">{introActions}</div>}
                   {first && (
                     <p className="mt-6 flex items-center gap-2 text-sm text-stone-300">
                       <span className="scroll-cue inline-block h-8 w-5 rounded-full border border-stone-300/70" aria-hidden />
