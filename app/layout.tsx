@@ -8,7 +8,7 @@ const sans = Inter({ subsets: ["latin"], variable: "--font-sans", display: "swap
 
 export const metadata: Metadata = {
   title: `${site.name} · ${site.tagline}`,
-  description: `${site.name} builds custom homes across ${site.region}. Scroll to watch a home go from bare land to move-in day.`,
+  description: `${site.name} builds custom full-brick homes across ${site.serviceArea}. Fixed-price contracts, weekly photo updates and a free consultation. Call ${site.phone}.`,
 };
 
 export const viewport: Viewport = {

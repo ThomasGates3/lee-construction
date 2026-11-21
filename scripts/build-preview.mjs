@@ -27,6 +27,23 @@ const result = await build({
     "process.env.NEXT_PUBLIC_PROFILE": JSON.stringify(profile),
   },
   logLevel: "warning",
+  // the demo preview ships only the fictional builder, never a lead's profile
+  plugins:
+    profile === "demo"
+      ? [
+          {
+            name: "demo-only-site",
+            setup(b) {
+              b.onResolve({ filter: /^@\/lib\/site$/ }, () => ({ path: "demo-site", namespace: "demo-site" }));
+              b.onLoad({ filter: /.*/, namespace: "demo-site" }, () => ({
+                contents: 'export { demoBuilder as site } from "./lib/profiles/demo";',
+                resolveDir: process.cwd(),
+                loader: "ts",
+              }));
+            },
+          },
+        ]
+      : [],
 });
 
 const js = result.outputFiles[0].text.replace(/<\/script/gi, "<\\/script");
