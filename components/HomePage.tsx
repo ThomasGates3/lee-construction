@@ -44,10 +44,10 @@ export function HomePage() {
         frames={photoFrames}
         finalActions={
           <>
-            <a href="#contact" className="rounded-full bg-copper-400 px-5 py-3 text-sm font-semibold text-stone-900 transition hover:bg-copper-300">
+            <a href="#contact" className="rounded-full bg-copper-400 px-4 py-2.5 text-sm font-semibold text-stone-900 transition hover:bg-copper-300 sm:px-5 sm:py-3">
               Book a free site walk
             </a>
-            <a href="#services" className="rounded-full border border-stone-300/60 px-5 py-3 text-sm font-semibold text-stone-50 transition hover:bg-white/10">
+            <a href="#services" className="rounded-full border border-stone-300/60 px-4 py-2.5 text-sm font-semibold text-stone-50 transition hover:bg-white/10 sm:px-5 sm:py-3">
               See what we build
             </a>
           </>

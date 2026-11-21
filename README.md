@@ -41,8 +41,8 @@ Same engine and `ScrollStory`, new scene file:
 
 ## Photo frames (what the home page uses now)
 
-The scroll section scrubs a photoreal time-lapse of a two-story brick home: 170 WebP frames in
-`public/frames/brick-two-story-atlanta/wide/`, made by `production/` (see `production/README.md`).
+The scroll section scrubs a photoreal time-lapse of a two-story brick home: 170 wide WebP frames in
+`public/frames/brick-two-story-atlanta/wide/` for desktop and 110 tall ones in `.../tall/` for portrait phones (full-screen, captions over the photo), made by `production/` (see `production/README.md`).
 `lib/frame-player.ts` draws the frame for the current scroll position on a canvas, loading frames coarse-to-fine so
 scrubbing works before they've all arrived. `scenes/photo/photoBuild.ts` holds the captions, timed to the 7 clips.
 To go back to the drawn house, render `<ScrollStory config={houseScene}><HouseScene /></ScrollStory>` in `components/HomePage.tsx`.

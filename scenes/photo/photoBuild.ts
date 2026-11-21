@@ -1,7 +1,8 @@
 import type { SceneConfig, Stage } from "@/lib/story";
-import type { FrameSource } from "@/lib/frame-player";
+import type { StoryFrames } from "@/components/ScrollStory";
 import { site } from "@/lib/site";
-import manifest from "@/public/frames/brick-two-story-atlanta/wide/manifest.json";
+import wide from "@/public/frames/brick-two-story-atlanta/wide/manifest.json";
+import tall from "@/public/frames/brick-two-story-atlanta/tall/manifest.json";
 
 /*
  * Photoreal version of the build: frames made from the fal clips (production/), one per scroll step.
@@ -13,10 +14,10 @@ const HOLD = 0.06; // first and last frame stay put for this share of the scroll
 const CLIPS = 7;
 const clip = (k: number) => HOLD + ((1 - 2 * HOLD) * k) / CLIPS; // scroll position where clip k starts (0-based)
 
-export const photoFrames: FrameSource = {
-  base: "/frames/brick-two-story-atlanta/wide",
-  manifest,
-  hold: HOLD,
+/* desktop gets the 16:9 set, portrait phones the 9:16 set; both follow the same 7-clip timeline */
+export const photoFrames: StoryFrames = {
+  wide: { base: "/frames/brick-two-story-atlanta/wide", manifest: wide, hold: HOLD },
+  tall: { base: "/frames/brick-two-story-atlanta/tall", manifest: tall, hold: HOLD },
 };
 
 const captions: Omit<Stage, "start" | "end">[] = [

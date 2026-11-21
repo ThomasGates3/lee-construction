@@ -8,8 +8,14 @@ import { createFramePlayer, type FrameSource } from "@/lib/frame-player";
 /**
  * Generic scroll story: a tall section with a sticky stage inside.
  * Pass any scene (house build, kitchen remodel...) as SVG children plus its config,
- * or pass `frames` to scrub a photo/video image sequence instead.
+ * or pass `frames` to scrub a photo/video image sequence instead. With `frames.tall`, portrait
+ * phones get their own full-screen sequence with the captions laid over it.
  */
+export interface StoryFrames {
+  wide: FrameSource;
+  tall?: FrameSource;
+}
+
 export function ScrollStory({
   config,
   children,
@@ -19,7 +25,7 @@ export function ScrollStory({
 }: {
   config: SceneConfig;
   children?: ReactNode;
-  frames?: FrameSource;
+  frames?: StoryFrames;
   finalActions?: ReactNode;
   heightVh?: number;
 }) {
@@ -32,6 +38,8 @@ export function ScrollStory({
   const railRef = useRef<HTMLOListElement>(null);
 
   const { stages } = config;
+  /** phone captions sit over a full-screen photo instead of on a panel below it */
+  const overlay = Boolean(frames?.tall);
 
   useEffect(() => {
     const track = trackRef.current;
@@ -42,7 +50,19 @@ export function ScrollStory({
 
     // portrait phones get a tighter crop so the house stays big
     const mq = window.matchMedia("(orientation: portrait)");
+    // photo mode: one player per orientation, swapped when the phone turns
+    let player: ReturnType<typeof createFramePlayer> | null = null;
+    let lastP = 0;
+    const setPlayer = () => {
+      if (!canvas || !frames) return;
+      player?.destroy();
+      const src = mq.matches && frames.tall ? frames.tall : frames.wide;
+      canvas.style.backgroundImage = `url(${src.base}/${src.manifest.poster})`;
+      player = createFramePlayer(canvas, src);
+      player.show(lastP);
+    };
     const setViewBox = () => {
+      setPlayer();
       if (!svg) return;
       const tall = mq.matches;
       svg.setAttribute("viewBox", tall ? config.viewBoxTall : config.viewBoxWide);
@@ -50,7 +70,6 @@ export function ScrollStory({
     };
     setViewBox();
     mq.addEventListener("change", setViewBox);
-    const player = canvas && frames ? createFramePlayer(canvas, frames) : null;
 
     let lastActive = -1;
     let lastDay = -1;
@@ -60,6 +79,7 @@ export function ScrollStory({
       track,
       scope: stage,
       onFrame: (p) => {
+        lastP = p;
         player?.show(p);
         const day = Math.max(1, Math.round(p * config.totalDays));
         if (day !== lastDay && dayRef.current) {
@@ -95,12 +115,14 @@ export function ScrollStory({
         className="story-stage sticky top-0 flex h-[100svh] w-full flex-col overflow-hidden bg-stone-900"
       >
         {/* scene */}
-        <div className="relative w-full flex-1 overflow-hidden portrait:h-[56%] portrait:flex-none" style={{ background: config.backdrop }}>
+        <div
+          className={`relative w-full flex-1 overflow-hidden ${overlay ? "" : "portrait:h-[56%] portrait:flex-none"}`}
+          style={{ background: config.backdrop }}
+        >
           {frames ? (
             <canvas
               ref={canvasRef}
               className="absolute inset-0 h-full w-full bg-cover bg-bottom"
-              style={{ backgroundImage: `url(${frames.base}/${frames.manifest.poster})` }}
               role="img"
               aria-label="Photo time-lapse of a brick home being built, from a grass lot to the finished house, driven by scrolling"
             />
@@ -121,7 +143,11 @@ export function ScrollStory({
           {frames && (
             <>
               <div className="pointer-events-none absolute inset-x-0 top-0 h-32 bg-gradient-to-b from-stone-900/60 to-transparent" />
-              <div className="pointer-events-none absolute inset-x-0 bottom-0 hidden h-[60%] bg-gradient-to-t from-stone-900/85 via-stone-900/40 to-transparent landscape:block" />
+              <div
+                className={`pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-stone-900/90 via-stone-900/45 to-transparent landscape:h-[60%] ${
+                  overlay ? "h-[55%]" : "hidden landscape:block"
+                }`}
+              />
             </>
           )}
 
@@ -129,13 +155,13 @@ export function ScrollStory({
           <div className="pointer-events-none absolute inset-y-0 left-0 hidden w-[46%] bg-gradient-to-r from-stone-900/55 via-stone-900/20 to-transparent landscape:block" />
 
           {/* day counter */}
-          <div className="absolute bottom-3 right-3 rounded-full portrait:px-3 portrait:py-1.5 landscape:bottom-auto landscape:right-8 landscape:top-24 bg-stone-900/70 px-4 py-2 text-[10px] font-medium uppercase tracking-[0.2em] text-stone-100 backdrop-blur sm:text-xs">
+          <div className={`absolute rounded-full ${overlay ? "right-4 top-20 portrait:top-[4.5rem]" : "bottom-3 right-3"} portrait:px-3 portrait:py-1.5 landscape:bottom-auto landscape:right-8 landscape:top-24 bg-stone-900/70 px-4 py-2 text-[10px] font-medium uppercase tracking-[0.2em] text-stone-100 backdrop-blur sm:text-xs`}>
             {config.dayLabel} <span ref={dayRef} className="tabular-nums text-copper-300">001</span>
           </div>
         </div>
 
         {/* captions: overlay on wide screens, panel under the scene on phones */}
-        <div className="relative flex-1 px-6 pb-6 pt-5 portrait:block landscape:absolute landscape:inset-y-0 landscape:left-0 landscape:flex landscape:w-full landscape:max-w-xl landscape:items-end landscape:px-10 landscape:pb-16 lg:landscape:px-16">
+        <div className={`${overlay ? "absolute inset-x-0 bottom-0 px-6 pb-[max(1.75rem,env(safe-area-inset-bottom))]" : "relative flex-1 px-6 pb-6 pt-5"} portrait:block landscape:absolute landscape:inset-y-0 landscape:left-0 landscape:flex landscape:w-full landscape:max-w-xl landscape:items-end landscape:px-10 landscape:pb-16 lg:landscape:px-16`}>
           <div className="relative w-full">
             {stages.map((s, i) => {
               const first = i === 0;
@@ -145,7 +171,7 @@ export function ScrollStory({
               return (
                 <div
                   key={s.id}
-                  className={`story-caption ${first ? "relative" : "absolute inset-x-0 bottom-0 portrait:bottom-auto portrait:top-0"} text-stone-50`}
+                  className={`story-caption ${first ? "relative" : `absolute inset-x-0 bottom-0 ${overlay ? "" : "portrait:bottom-auto portrait:top-0"}`} text-stone-50`}
                   {...anim({
                     o: [
                       [fadeInAt, first ? 1 : 0],
@@ -169,14 +195,20 @@ export function ScrollStory({
                   >
                     {s.title}
                   </h2>
-                  <p className="mt-3 max-w-md text-[15px] leading-relaxed text-stone-200 sm:mt-4 sm:text-lg">{s.body}</p>
+                  <p
+                    className={`mt-3 max-w-md text-[15px] leading-relaxed text-stone-200 sm:mt-4 sm:text-lg ${
+                      last && overlay ? "portrait:hidden" : ""
+                    }`}
+                  >
+                    {s.body}
+                  </p>
                   {first && (
                     <p className="mt-6 flex items-center gap-2 text-sm text-stone-300">
                       <span className="scroll-cue inline-block h-8 w-5 rounded-full border border-stone-300/70" aria-hidden />
                       Scroll to build
                     </p>
                   )}
-                  {last && finalActions && <div className="mt-6 flex flex-wrap gap-3">{finalActions}</div>}
+                  {last && finalActions && <div className={`flex flex-wrap gap-3 ${overlay ? "mt-4 sm:mt-6" : "mt-6"}`}>{finalActions}</div>}
                 </div>
               );
             })}

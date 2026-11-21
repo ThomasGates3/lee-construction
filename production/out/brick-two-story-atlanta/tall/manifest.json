@@ -33,5 +33,34 @@
       "at": "2026-11-21T14:30:25.444Z"
     }
   },
-  "clips": {}
+  "clips": {
+    "2": {
+      "url": "https://v3b.fal.media/files/b/0ab35e13/-BJ6q2ZONjPDC8rYzxx6n_output.mp4",
+      "at": "2026-11-21T14:38:04.932Z"
+    },
+    "3": {
+      "url": "https://v3b.fal.media/files/b/0ab35e34/BW1F9uebqMPKiA492BjXg_output.mp4",
+      "at": "2026-11-21T14:43:38.034Z"
+    },
+    "4": {
+      "url": "https://v3b.fal.media/files/b/0ab35e44/6abjncFY_lONva9SVgjtw_output.mp4",
+      "at": "2026-11-21T14:46:09.764Z"
+    },
+    "5": {
+      "url": "https://v3b.fal.media/files/b/0ab35e58/wG2agHAN7SZYGO8W3EjwU_output.mp4",
+      "at": "2026-11-21T14:49:33.201Z"
+    },
+    "6": {
+      "url": "https://v3b.fal.media/files/b/0ab35e79/SBJUNqOPwY2neaBOajqXb_output.mp4",
+      "at": "2026-11-21T14:55:00.890Z"
+    },
+    "7": {
+      "url": "https://v3b.fal.media/files/b/0ab35e8e/wQ5sY_Uh8swJOuXbq1SK__output.mp4",
+      "at": "2026-11-21T14:58:31.980Z"
+    },
+    "8": {
+      "url": "https://v3b.fal.media/files/b/0ab35ead/AJF4KRWaYsuTVTIRZVmy3_output.mp4",
+      "at": "2026-11-21T15:03:40.063Z"
+    }
+  }
 }
