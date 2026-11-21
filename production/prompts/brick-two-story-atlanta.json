@@ -1,0 +1,80 @@
+{
+  "name": "brick-two-story-atlanta",
+  "arc": "Grass lot to finished two-story brick 4 bed, 2.5 bath home in Metro Atlanta",
+  "notes": "Generated finished-house-first, then each earlier stage is an edit of the stage after it, so the camera never moves. Stage ids run in story order (1 = grass lot, 8 = finished). Each stage's clip text describes the video that ends on that stage, so stage 1 has none and there are 7 clips.",
+  "lock": "Locked camera, fixed tripod perspective. Keep the exact same camera position, lens, framing, horizon line, street, curb, treeline, sky and lighting as the input image. The house footprint stays exactly where it is: centered left to right, spanning the middle half of the frame width, sitting on the same patch of ground at the same size, and the house's full height and roof stay inside the frame. Do not recompose, zoom, crop, pan, tilt or re-centre. No people, no readable text, no logos, no signs.",
+  "aspects": {
+    "wide": {
+      "aspect_ratio": "16:9",
+      "bible": "Photorealistic architectural photograph of one residential lot in a quiet Metro Atlanta, Georgia suburb. Locked camera, fixed tripod perspective: elevated three-quarter front view taken from across the street, about 20 feet up, 35mm lens feel, horizon in the upper third of the frame. The lot is a gently sloping rectangle about 80 feet wide, with a tall mixed loblolly pine and oak treeline behind it and a light grey concrete curb and dark asphalt street running across the bottom edge of the frame. No neighboring houses are visible. The house is centered left to right and spans the middle half of the frame width. Leave clear space above the roof for treeline and sky. Lighting: soft, even, bright overcast daylight, no hard shadows, neutral white balance, crisp detail."
+    },
+    "tall": {
+      "aspect_ratio": "9:16",
+      "bible": "Photorealistic architectural photograph, vertical phone framing, of one residential lot in a quiet Metro Atlanta, Georgia suburb. Locked camera, fixed tripod perspective: straight-on front view taken from the far side of the street, about 15 feet up, 28mm lens feel. The house is centered left to right and spans about 85 percent of the frame width, sitting in the middle third of the frame, with the tall mixed loblolly pine and oak treeline and overcast sky filling the top third and the light grey concrete curb, dark asphalt street and front yard filling the bottom third. No neighboring houses are visible. Leave clear space above the roof for treeline and sky. Lighting: soft, even, bright overcast daylight, no hard shadows, neutral white balance, crisp detail."
+    }
+  },
+  "final": "The lot holds a finished two-story traditional brick home of about 2,600 square feet, 4 bedrooms and 2.5 baths: warm red-brown running-bond brick veneer with light grey mortar on every wall of both floors, a dark charcoal architectural-shingle hip roof over the two-story main body with one front-facing gable centered above the front entry, a one-story covered front porch running along the front of the main body under a low charcoal shingle roof held up by four square white columns, black-framed double-hung windows with crisp white trim on both floors with the second-floor windows lined up above the first-floor ones, a black front door with a simple brass handle, and an attached one-story two-car garage on the right with its own lower charcoal hip roof and one white carriage-style garage door. A new light grey concrete driveway runs from the garage to the street on the right, and a concrete walkway leads from the porch to the driveway. Freshly laid green sod lawn, dark brown mulch beds along the front with low boxwood shrubs, and two young red maple trees in the front yard. The whole house, including the top of the roof, sits well inside the frame with treeline and sky above it.",
+  "stages": [
+    {
+      "id": 1,
+      "slug": "grass-lot",
+      "range": "0-10%",
+      "edit": "Turn this into the same lot before any work began. Remove the cleared clay, the stakes and every bit of construction. The whole lot is undeveloped: uneven green and straw-colored Bermuda grass with a few patches of bare red clay and three small young pine saplings near the back. The treeline, curb and street are unchanged. Nothing is built.",
+      "clip": null
+    },
+    {
+      "id": 2,
+      "slug": "cleared",
+      "range": "10-22%",
+      "edit": "Remove the excavated pad, the wooden stakes, the orange string lines, the white paint marks and the excavator. The entire lot is now scraped flat to bare red Georgia clay, with faint tire tracks across it and a small mound of dark topsoil at the back left corner. No grass remains on the lot. The treeline, curb and street are unchanged.",
+      "clip": "A grassy lot is scraped down to bare red Georgia clay; grass disappears in sweeping passes and tire tracks appear."
+    },
+    {
+      "id": 3,
+      "slug": "layout-dig",
+      "range": "22-34%",
+      "edit": "Remove the concrete slab and the plumbing pipes. Where the house will stand, the clay is cut down about one foot into a flat, level rectangular pad with clean straight edges in the exact footprint of the house and garage. Wooden survey stakes stand at every corner of the pad, joined by taut bright orange string lines that outline the footprint, with thin white spray-paint lines on the clay along each side. A small yellow compact excavator with no logos is parked at the far left edge of the lot. The rest of the lot is bare red clay.",
+      "clip": "On bare red clay, survey stakes and orange string lines appear outlining the house, then the footprint is dug out into a level pad while a small excavator works at the edge."
+    },
+    {
+      "id": 4,
+      "slug": "foundation",
+      "range": "34-46%",
+      "edit": "Remove all two-story wall framing, the second-floor deck, roof trusses and lumber. Only the foundation remains: a smooth new light grey concrete slab in the exact footprint of the house and attached garage, its edges formed cleanly, with a few short white PVC plumbing pipes and grey electrical conduit stubs sticking up through the slab. The excavator and building materials are gone. The rest of the lot is bare red clay.",
+      "clip": "Wooden forms fill with concrete and set into a smooth grey slab across the dug footprint, with white plumbing pipes poking up."
+    },
+    {
+      "id": 5,
+      "slug": "framing",
+      "range": "46-60%",
+      "edit": "Remove the roof shingles, roof decking, house wrap, wall sheathing, windows, front door and garage door. What remains is the bare two-story wood frame standing on the concrete slab: pale yellow pine stud walls for the first floor, a visible second-floor deck of wood joists and subfloor, and stud walls for the second floor above it, with every window, door and garage opening framed in, and evenly spaced light wood roof trusses forming the main hip roof, the front gable, the porch roof and the lower garage roof, open to the sky between them. The porch posts are bare wood. A neat stack of lumber sits on the clay to the left of the house. Keep every roof shape exactly as in the input: the garage keeps its low hip roof sloping on all sides with no gable facing the street, and the porch roof keeps its shape.",
+      "clip": "Pale wood stud walls rise on the slab, the second-floor deck goes on, the upper walls rise, then roof trusses are set across the top one by one until the full two-story frame stands."
+    },
+    {
+      "id": 6,
+      "slug": "dry-in",
+      "range": "60-72%",
+      "edit": "Remove all of the brick. Every exterior wall on both floors and the garage is now tan OSB sheathing fully wrapped in plain white unbranded house wrap with neat seams. The dark charcoal shingle roofs are complete, the black-framed windows with white trim are installed on both floors, and the black front door is in, but the garage opening is still empty and the porch columns are bare wood posts. A few pallets of red-brown brick wrapped in clear plastic wait on the clay near the front. No lawn, no driveway. Keep every roof shape exactly as in the input: the garage keeps its low hip roof sloping on all sides with no gable facing the street, and the porch roof keeps its shape.",
+      "clip": "The two-story wood frame is sheathed and wrapped in white house wrap, the roofs are decked and shingled in charcoal, and the windows and front door go in on both floors."
+    },
+    {
+      "id": 7,
+      "slug": "brick",
+      "range": "72-85%",
+      "edit": "Remove all of the lawn, mulch, shrubs, trees, the concrete driveway and the walkway, so the whole lot around the house is bare graded red clay again with a gravel construction entrance from the street. On the house, the red-brown running-bond brick veneer is only partly laid: it covers the whole first floor and the garage up to the level of the porch roof with a clean, level top course, and the entire second floor is still white house wrap. The white garage door is not yet installed, so the garage opening is empty. The roofs, windows, front door and white porch columns stay exactly as they are. A few pallets of brick sit on the clay near the front.",
+      "clip": "Brick veneer climbs the walls course by course until the whole first floor and garage are bricked up to the porch roof."
+    },
+    {
+      "id": 8,
+      "slug": "finished",
+      "range": "85-100%",
+      "edit": null,
+      "clip": "The brick climbs the second floor to the roofline, the garage door goes in, the driveway is poured, and fresh sod, mulch beds, boxwood shrubs and two young maple trees appear around the finished home."
+    }
+  ],
+  "video": {
+    "prompt_prefix": "Construction time-lapse from a locked-off camera on a tripod: the camera never moves, pans, tilts or zooms.",
+    "prompt_suffix": "Soft, constant overcast daylight with no flicker and no moving shadows. Smooth, steady progress. No close-up people, no text.",
+    "negative_prompt": "camera movement, zoom, pan, tilt, shake, flicker, flashing light, moving shadows, morphing, warping, melting, blur, distortion, low quality, people in foreground, text, watermark, logo"
+  }
+}
